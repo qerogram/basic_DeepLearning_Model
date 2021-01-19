@@ -20,10 +20,13 @@ class DeepLearning :
   def compileModel(self) :
     X = tf.keras.layers.Input(shape=[len(self.독립.columns)])
 
+    ## add Hidden Layer
+    H = tf.keras.layers.Dense(10, activation='swish')(X)
+
     if self.mode == self.REGRESSION_MODE :
-      Y = tf.keras.layers.Dense(len(self.종속.columns))(X)
+      Y = tf.keras.layers.Dense(len(self.종속.columns))(H)
     else :
-      Y = tf.keras.layers.Dense(len(self.종속.columns), activation='softmax')(X)
+      Y = tf.keras.layers.Dense(len(self.종속.columns), activation='softmax')(H)
 
     self.model = tf.keras.models.Model(X, Y)
     self.model.compile(loss='mse' if self.mode == self.REGRESSION_MODE else 'categorical_crossentropy',
@@ -35,7 +38,6 @@ class DeepLearning :
   
   def predictData(self, data) :
     print(self.model.predict(data))
-
 
 if __name__ == "__main__" :
   d = DeepLearning('https://raw.githubusercontent.com/blackdew/tensorflow1/master/csv/iris.csv', 4, DeepLearning.CLASSIFICATION_MODE)
